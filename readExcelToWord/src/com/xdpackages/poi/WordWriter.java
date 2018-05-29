@@ -1,9 +1,16 @@
 package com.xdpackages.poi;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.Borders;
 import org.apache.poi.xwpf.usermodel.BreakClear;
 import org.apache.poi.xwpf.usermodel.BreakType;
@@ -15,9 +22,32 @@ import org.apache.poi.xwpf.usermodel.VerticalAlign;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+
+import com.xdpackages.config.Configuration;
 
 public class WordWriter {
 
+	private XWPFDocument document;
+	private XWPFTable table;	
+	private List<String> lstCols;
+	//Write the Document in file system
+    private FileOutputStream out;
+    private String fileName;
+    private DataFormatter dataFormatter;
+    private List<String> lstWordCols;
+	
+	
+	public WordWriter(String fileName) {
+		String [] strCols = Configuration.getString("campos.excel.columnas").split(",");
+	    lstCols = Arrays.asList(strCols);
+	    strCols = Configuration.getString("campos.word.columnas").split(",");
+	    lstWordCols = Arrays.asList(strCols);
+	    this.fileName = fileName; 
+	    dataFormatter = new DataFormatter();
+	}
+	
 	public boolean writeWord() throws FileNotFoundException, IOException {
 		try (XWPFDocument doc = new XWPFDocument()) {
 
@@ -112,4 +142,67 @@ public class WordWriter {
             return true;
         }
 	}
+
+	/**
+	 * 
+	 * @param excelRow
+	 */
+	public void setHeader(Row excelRow) {
+		try {
+			document = new XWPFDocument();
+			//create table
+			table   = document.createTable();
+				
+		      //create first row
+		      XWPFTableRow tableRow = table.getRow(0);
+		     
+		      boolean isHeader  = true;
+			processRow(excelRow, tableRow, isHeader);
+		      		      		      		      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void setDetail(Row excelRow) {
+		try {
+			 XWPFTableRow tableRow = table.createRow();
+			 boolean isHeader = false;
+			 processRow(excelRow, tableRow, isHeader);
+		    
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private void processRow(Row excelRow, XWPFTableRow tableRow, boolean isHeader) {
+		int i=0;
+		
+		for (String lstCol : lstCols) {
+			Row row = excelRow;
+	    	  Cell cell = row.getCell(Integer.parseInt(lstCol));
+	    	  String cellValue = dataFormatter.formatCellValue(cell);
+	    	  if(isHeader) {
+	    		  tableRow.addNewTableCell().setText(cellValue);
+	    	  }
+	    	  else {
+	    		  
+				tableRow.getCell(i).setText(cellValue);
+				i++;
+	    	  }
+		}
+		//lstCols.forEach(lstCol ->{  });
+	}
+
+	public void closeWord() throws IOException {
+		out = new FileOutputStream(new File(fileName));
+		document.write(out);
+	    out.close();		
+	}
+	
+	
+	
+	
 }

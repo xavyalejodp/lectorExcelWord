@@ -19,9 +19,10 @@ import javax.swing.JTextField;
 public class WinExcelWord {
 
 	private JFrame frame;
-	private JTextField txtArchivoExcel;
-	private String archivo;
+	private JTextField txtArchivoExcel;	
 	private JTextField txtArchivoWord;
+	private String nombreArchivoExcel;
+	private String nombreArchivoWord;
 
 	/**
 	 * Launch the application.
@@ -75,8 +76,8 @@ public class WinExcelWord {
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = jfc.getSelectedFile();
 					System.out.println(selectedFile.getAbsolutePath());
-					archivo =selectedFile.getAbsolutePath();
-					txtArchivoExcel.setText(archivo);
+					nombreArchivoExcel =selectedFile.getAbsolutePath();
+					txtArchivoExcel.setText(nombreArchivoExcel);
 				}
 			}
 		});
@@ -101,6 +102,21 @@ public class WinExcelWord {
 		txtArchivoWord.setColumns(10);
 		
 		JButton btnDirectorioGuardar = new JButton("Directorio Guardar");
+		btnDirectorioGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+				int returnValue = jfc.showOpenDialog(null);
+				// int returnValue = jfc.showSaveDialog(null);
+
+				if (returnValue == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = jfc.getSelectedFile();
+					System.out.println(selectedFile.getAbsolutePath());
+					nombreArchivoWord =selectedFile.getAbsolutePath();
+					txtArchivoWord.setText(nombreArchivoWord);
+				}
+			}
+		});
 		btnDirectorioGuardar.setBounds(367, 63, 123, 23);
 		frame.getContentPane().add(btnDirectorioGuardar);
 	}

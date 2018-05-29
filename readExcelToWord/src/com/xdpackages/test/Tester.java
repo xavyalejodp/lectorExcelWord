@@ -15,7 +15,7 @@ public class Tester {
 	
 		ExcelReader excelReader = new ExcelReader();
 		try {
-			excelReader.readExcel("C:\\Temp\\test.xlsx");
+			excelReader.readExcelWriteWord("C:\\Temp\\test.xlsx", "C:\\Temp\\test.docx");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -24,7 +24,7 @@ public class Tester {
 	
 	@Test
 	public void escribirArchivoWord() {
-		WordWriter wordWriter= new WordWriter();
+		WordWriter wordWriter= new WordWriter("");
 		try {
 			wordWriter.writeWord();
 		} catch (IOException e) {
