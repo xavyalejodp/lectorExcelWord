@@ -25,6 +25,7 @@ public class ExcelReader {
 
 	        // Retrieving the number of sheets in the Workbook
 	        System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+	        logger.info("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
 
 	        /*
 	           =============================================================

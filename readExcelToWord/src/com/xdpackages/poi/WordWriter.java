@@ -185,13 +185,31 @@ public class WordWriter {
 	    	  Cell cell = row.getCell(Integer.parseInt(lstCol));
 	    	  String cellValue = dataFormatter.formatCellValue(cell);
 	    	  if(isHeader) {
-	    		  tableRow.addNewTableCell().setText(cellValue);
+	    		  
+	    		  if(i == 0) {
+	    			 // tableRow.getCell(i).setText(cellValue);
+	    			  XWPFParagraph p1 = tableRow.getCell(i).getParagraphs().get(0);
+	    				p1.setAlignment(ParagraphAlignment.CENTER);
+	    				XWPFRun r1 = p1.createRun();
+	    				r1.setBold(true);
+	    				r1.setText(cellValue);
+	    		  }
+	    		  else {
+	    		   //tableRow.addNewTableCell().setText(cellValue);
+	    		   XWPFParagraph p1 = tableRow.addNewTableCell().getParagraphs().get(0);
+   				p1.setAlignment(ParagraphAlignment.CENTER);
+   				XWPFRun r1 = p1.createRun();
+   				r1.setBold(true);
+   				r1.setText(cellValue);
+	    		  }
 	    	  }
 	    	  else {
 	    		  
 				tableRow.getCell(i).setText(cellValue);
-				i++;
+				
 	    	  }
+	    	  
+	    	  i++;
 		}
 		//lstCols.forEach(lstCol ->{  });
 	}
